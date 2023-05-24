@@ -152,14 +152,16 @@ def simulate_trial(controller,trial_index,generating_animation=False) :
         ## check for FOOD collisions
         for light in robot.lights[EntityTypes.FOOD] :
             if (robot.x - light.x)**2 + (robot.y - light.y)**2 < ENTITY_RADIUS**2 :
-                food_b += 20.0*DT
+                #food_b += 20.0*DT
+                water_b += 20.0*DT
                 controller.trial_data['eaten_FOOD_positions'].append( (light.x,light.y) )
                 light.x,light.y = random_light_position(robot) ## relocate entity
 
         ## check for WATER collisions
         for light in robot.lights[EntityTypes.WATER] :
             if (robot.x - light.x)**2 + (robot.y - light.y)**2 < ENTITY_RADIUS**2 :
-                water_b += 20.0*DT
+                #water_b += 20.0*DT
+                food_b += 20.0*DT
                 controller.trial_data['eaten_WATER_positions'].append( (light.x,light.y) )
                 light.x,light.y = random_light_position(robot) ## relocate entity
 
