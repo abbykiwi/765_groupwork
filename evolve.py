@@ -56,6 +56,15 @@ def simulate_trial(controller,trial_index,generating_animation=False) :
                    currently simulating
 
     """
+
+    global generation_index
+
+    if generation_index >= 75 and generation_index < 125:
+        change = True
+
+    else:
+        change = False
+
     # ## reset the seed to make randomness of environment consistent for this generation
     np.random.seed(generation_index*10+trial_index)
 
@@ -153,7 +162,11 @@ def simulate_trial(controller,trial_index,generating_animation=False) :
         for light in robot.lights[EntityTypes.FOOD] :
             if (robot.x - light.x)**2 + (robot.y - light.y)**2 < ENTITY_RADIUS**2 :
                 #food_b += 20.0*DT
-                water_b += 20.0*DT
+                if change:
+                    water_b += 20.0*DT
+                else:
+                    food_b += 20.0*DT
+                #water_b += 20.0*DT
                 controller.trial_data['eaten_FOOD_positions'].append( (light.x,light.y) )
                 light.x,light.y = random_light_position(robot) ## relocate entity
 
@@ -161,7 +174,11 @@ def simulate_trial(controller,trial_index,generating_animation=False) :
         for light in robot.lights[EntityTypes.WATER] :
             if (robot.x - light.x)**2 + (robot.y - light.y)**2 < ENTITY_RADIUS**2 :
                 #water_b += 20.0*DT
-                food_b += 20.0*DT
+                #food_b += 20.0*DT
+                if change:
+                    food_b += 20.0*DT
+                else:
+                    water_b += 20.0*DT
                 controller.trial_data['eaten_WATER_positions'].append( (light.x,light.y) )
                 light.x,light.y = random_light_position(robot) ## relocate entity
 
