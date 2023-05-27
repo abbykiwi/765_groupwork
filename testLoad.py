@@ -5,6 +5,7 @@ from robot import Robot,Light
 from seth_controller import SethController, EntityTypes, ENTITY_RADIUS
 import math
 import numpy as np
+from plotting import plot_state_history,fitness_plots,plot_population_genepool
 
 def calculate_penalty(current_pos, step_direction, target_directions):
     angles = []
@@ -39,44 +40,20 @@ def closest_value(angles, angle_taken):
 #             print (pickle.load(openfile))
 #         except EOFError:
 #             break
-robot = None
-with (open("Populations/10-penalty/fitness_history.pkl", "rb")) as openfile:
-    while True:
-        try:
-            robot = pickle.load(openfile)
-        except EOFError:
-            break
-print(robot)
-
+def load_file(iteration):
+    data = None
+    with (open(f"Populations/{iteration}-penalty/fitness_history.pkl", "rb")) as openfile:
+        while True:
+            try:
+                data = np.array(pickle.load(openfile))
+            except EOFError:
+                break
+    return data
 
 import matplotlib.pyplot as plt
+savepath = os.path.abspath('./output/')
+from pylab import *
 
-def visualize_graph(data):
-    num_rows = len(data)
-    num_cols = len(data[0])
-
-    # Generate x and y coordinates for each element in the list of lists
-    x_coords = [i for i in range(num_cols) for _ in range(num_rows)]
-    y_coords = [j for _ in range(num_cols) for j in range(num_rows)]
-
-    # Flatten the list of lists
-    flattened_data = [item for sublist in data for item in sublist]
-
-    # Plot the graph
-    plt.scatter(x_coords, y_coords, c=flattened_data, cmap='viridis')
-    plt.colorbar()
-
-    # Add labels to the data points
-    for i in range(num_rows):
-        for j in range(num_cols):
-            plt.text(j, i, str(data[i][j]), ha='center', va='center')
-
-    # Set axis labels
-    plt.xlabel('Column')
-    plt.ylabel('Row')
-
-    # Show the plot
-    plt.show()
 
 # Example usage
 # data = [
@@ -84,12 +61,22 @@ def visualize_graph(data):
 #     [4, 5, 6],
 #     [7, 8, 9]
 # ]
-for i in robot:
-    print(i)
-plt.plot(robot)
-plt.xlabel('Index')
-plt.ylabel('Row')
-plt.show()
+last_fitnesses = []
+fitnesses = []
+for i in range(1,11):
+    data = load_file(i)
+    fitnesses.append(data)
+    for j in data:
+        last_fitnesses.append(j[len(j)-1])
+    #last_fitnesses.append(data[len(data)-1])
+
+plot_fitnesses(fitnesses)
+
+print(last_fitnesses)
+print(np.mean(last_fitnesses))
+print(np.std(last_fitnesses))
+ #
+#plt.show()
 # visualize_graph(robot)
 # print(robot.trial_data['robot'].x_h)
 # print()

@@ -113,6 +113,32 @@ def fitness_plots(savepath,pop_fit_history) :
     close()
 
 
+def plot_population_fitnesses(pop_fit_history):
+    # Create a figure with a grid of 10 subplots
+    fig, axs = plt.subplots(5, 2, figsize=(12, 16))
+    fig.subplots_adjust(hspace=0.5)  # Adjust the vertical spacing between subplots
+
+    # Flatten the axs array to easily access each individual subplot
+    axs = axs.flatten()
+    print(pop_fit_history)
+    for i, ax in enumerate(axs):
+        means = np.mean(np.array(pop_fit_history[i]), axis=1)
+        stddevs = np.std(np.array(pop_fit_history[i]), axis=1)
+        maxes = np.max(np.array(pop_fit_history[i]), axis=1)
+        # print(len(means))
+        # print((stddevs))
+        x_len = len(pop_fit_history[i])
+        ax.errorbar(range(x_len), means, stddevs, label='mean and std fitness')
+        ax.plot(maxes, 'r', label='max fitness')
+        if (x_len > 1):
+            ax.set_xlim(0, x_len - 1)
+        ax.legend()
+        ax.set_xlabel('generation')
+        ax.set_ylabel('fitness')
+
+    plt.tight_layout()
+    plt.show()
+
 def plot_population_genepool(savepath,pop) :
         figure() # genes_of_entire_population
         pop_size = len(pop)

@@ -344,28 +344,6 @@ def generation() :
           f'({np.mean(penalties):.4f}/{np.min(penalties):.4f}/{np.max(penalties):.4f})')
     generation_index += 1
 
-def savePopulation(robots):
-    global numGenerations
-    for robotIndex in range(len(robots)):
-        path = 'Populations/'+str(len(numGenerations))+"-penalty"
-        createIfNotExists(path)
-        file_name = path+'/robot'+str(robotIndex)+'.pkl'
-        with open(file_name, 'wb') as file:
-            pickle.dump(robots[robotIndex], file)
-            print(f'Object successfully saved to "{file_name}"')
-
-def createIfNotExists(path):
-    isExist = os.path.exists(path)
-    if not isExist:
-        os.makedirs(path)
-        
-def saveData(data, name):
-    dir = 'Populations/'+str(len(numGenerations))+"-penalty"
-    path = dir+'/'+name+'.pkl'
-    createIfNotExists(dir)
-    with open(path, 'wb') as fp:
-        pickle.dump(data, fp)
-
 def evolve() :
     global fitnesses,generation_index, pop, pop_fit_history, numGenerations
     fitnesses = []

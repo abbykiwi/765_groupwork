@@ -67,7 +67,7 @@ class SMLink(object):
         return out,unscaled
 
 class SethController(object):
-    def __init__(self, genome=None, n_sensitivities=3, n_motors=2) :
+    def __init__(self, seed=None,genome=None, n_sensitivities=3, n_motors=2) :
         self.n_sensitivities = n_sensitivities
         self.n_motors = n_motors
         self.SYMMETRIC = True
@@ -82,6 +82,8 @@ class SethController(object):
         
         if genome is None :
             ## create a new random genome (used to seed the initial population)
+            if (seed != None):
+                np.random.seed(seed)
             self.genome = np.random.rand(self.N_GENES)
         else :
             ## otherwise set the controller's genome to the argument
