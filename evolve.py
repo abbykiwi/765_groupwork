@@ -7,10 +7,11 @@ from robot import Robot,Light
 from seth_controller import SethController, EntityTypes, ENTITY_RADIUS
 from plotting import plot_state_history,fitness_plots,plot_population_genepool
 import math
+from RoboticDataIO import RoboticDataIO
 
 from multiprocessing import Pool
 plt.switch_backend('agg')
-
+roboticDataIO = RoboticDataIO("-penalty")
 np.set_printoptions(formatter={'float': lambda x: "{0:0.3f}".format(x)})
 
 ## where to write simulation output to
@@ -276,16 +277,16 @@ def generation() :
         #     plot_state_history(os.path.join(savepath,'everyone/'),pop[ind_i],f'everyone/i{ind_i}')
         #     pop[worst_index].plot_links(f'everyone/i{ind_i}')
     ##if (generation_index)
-    if (len(adaptedGenomes) >= 18 or generation_index >= 500):
-        numGenerations.append(generation_index)
-        savePopulation(pop)
-        saveData(pop_fit_history, "fitness_history")
-        saveData(penalties, "penalties")
-        if (len(numGenerations) == 10):
-            saveData(numGenerations, "generations")
-            raise Exception("Adapted population")
-        else:
-            evolve()
+    # if (len(adaptedGenomes) >= 18 or generation_index >= 500):
+    #     numGenerations.append(generation_index)
+    #     roboticDataIO.savePopulation(pop)
+    #     roboticDataIO.saveData(pop_fit_history, "fitness_history")
+    #     roboticDataIO.saveData(penalties, "penalties")
+    #     if (len(numGenerations) == 10):
+    #         roboticDataIO.saveData(numGenerations, "generations")
+    #         raise Exception("Adapted population")
+    #     else:
+    #         evolve()
 
     ######################################################################
     #### USE FITNESS PROPORTIONATE SELECTION TO CREATE THE NEXT GENERATION
@@ -344,13 +345,24 @@ def generation() :
           f'({np.mean(penalties):.4f}/{np.min(penalties):.4f}/{np.max(penalties):.4f})')
     generation_index += 1
 
-def evolve() :
-    global fitnesses,generation_index, pop, pop_fit_history, numGenerations
-    fitnesses = []
+
+
+def loadRobots():
+    global fitnesses,generation_index, pop, pop_fit_history, numGenerations, roboticDataIO
+    populationIndex = 10
+    pop_fit_history = roboticDataIO.load_file(10, "fitness_history")
+    pop = roboticDataIO.loadPopulation(10)
+    numGenerations = roboticDataIO.load_file(10,"generations")
     generation_index = 0
-    seed = len(numGenerations) + 1
-    pop = [SethController(seed=(seed*x)) for x in range(POP_SIZE)]
-    pop_fit_history = []
+
+def evolve(load=False) :
+    global fitnesses,generation_index, pop, pop_fit_history, numGenerations
+    if not load:
+        fitnesses = []
+        generation_index = 0
+        seed = len(numGenerations) + 1
+        pop = [SethController(seed=(seed*x)) for x in range(POP_SIZE)]
+        pop_fit_history = []
     print(f'Every generation is {POP_SIZE*N_TRIALS} fitness evaluations.')
     
     while True :
@@ -362,4 +374,5 @@ def evolve() :
 
 
 if __name__ == '__main__' :
-    evolve()
+    loadRobots()
+    evolve(True)

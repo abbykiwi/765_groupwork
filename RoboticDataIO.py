@@ -35,10 +35,20 @@ class RoboticDataIO:
     def loadPopulation(self, populationIndex):
         robots = []
         for i in range(25):
-            with (open(self.baseDir+str(populationIndex)+"/robot"+str(i)+".pkl", "rb")) as openfile:
+            with (open(f"{self.baseDir}{str(populationIndex)}{self.suffix}/robot"+str(i)+".pkl", "rb")) as openfile:
                 while True:
                     try:
                         robots.append(pickle.load(openfile))
                     except EOFError:
                         break
         return robots
+
+    def load_file(self,populationIndex, fileName):
+        data = None
+        with (open(f"{self.baseDir}{populationIndex}{self.suffix}/{fileName}.pkl", "rb")) as openfile:
+            while True:
+                try:
+                    data = pickle.load(openfile)
+                except EOFError:
+                    break
+        return data
