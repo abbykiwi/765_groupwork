@@ -19,6 +19,9 @@ TEST_GA = False
 
 DRAW_EVERY_NTH_GENERATION = 5
 
+# Used to teleport sources 
+MOVING_SOURCES = True
+
 ## EVOLUTION PARAMETERS
 N_TRIALS = 5
 POP_SIZE = 25
@@ -117,6 +120,33 @@ def simulate_trial(controller,trial_index,generating_animation=False) :
         controller.trial_data['water_battery_h'].append(water_b)
         controller.trial_data['food_battery_h'].append(food_b)
         controller.trial_data['score_h'].append(score)
+        
+        
+        # Need to update the batteries of the sources and move if they have reached 0
+        # Check food source
+        if MOVING_SOURCES:
+            for light in robot.lights[EntityTypes.FOOD] :
+                light.battery -= light.drain_rate
+                if light.battery <= 0: 
+                    light.battery = 1.0
+                    light.update_drain_rate()
+                    light.x,light.y = random_light_position(robot) ## relocate entity
+
+            ## check water source
+            for light in robot.lights[EntityTypes.WATER] :
+                light.battery -= light.drain_rate
+                if light.battery <= 0: 
+                    light.battery = 1.0
+                    light.update_drain_rate()
+                    light.x,light.y = random_light_position(robot) ## relocate entity
+            
+            # Check traps
+            for light in robot.lights[EntityTypes.TRAP] :
+                light.battery -= light.drain_rate
+                if light.battery <= 0: 
+                    light.battery = 1.0
+                    light.update_drain_rate()
+                    light.x,light.y = random_light_position(robot) ## relocate entity
 
         if generating_animation :
             ##used in animation

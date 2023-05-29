@@ -1,5 +1,6 @@
 from pylab import *
 from enum import IntEnum
+import random as r
 from scipy.spatial.distance import euclidean
 
 class SensorSide(IntEnum) :
@@ -132,7 +133,12 @@ class Light(object) :
         self.x = x
         self.y = y
         self.light_type = light_type
+        self.battery = 1.0
+        self.drain_rate = r.uniform(0.005, 0.01) # Rate at which the source will ve drained
 
+    def update_drain_rate(self): 
+         self.drain_rate = r.uniform(0.005, 0.01)
+         
     def impact_sensor(self,sensor_x,sensor_y,sensor_angle) :
         accum = 0.0
         ## compensating for wrap around light viewing
